@@ -35,19 +35,19 @@
     "envalid": "^7.3.1",
     "express": "^4.18.2",
     "helmet": "^6.0.0",
+    "joi": "^17.7.0",
     "module-alias": "^2.2.2",
     "mongoose": "^6.7.3",
     "morgan": "^1.10.0"
   },
   "_moduleAliases": {
-    "@/resources": [
+    "@/resources": 
       "dist/resources"
-    ],
-    "@/utils": [
+    ,
+    "@/utils": 
       "dist/utils"
-    ],
-    "@/middleware": [
+    ,
+    "@/middleware": 
       "dist/middleware"
-    ]
   }
 }
