@@ -1,4 +1,4 @@
-import { Router, Request, Response, NextFunction, response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import Controller from '@/utils/interfaces/controller.interface';
 import HttpException from '@/utils/exceptions/http.exception';
 import validationMiddleware from '@/middleware/validation.middleware';
@@ -43,8 +43,8 @@ class UserController implements Controller {
                 'user'
             );
             res.status(201).json({ token });
-        } catch (error: any) {
-            next(new HttpException(400, error.message));
+        } catch (error: unknown) {
+            next(new HttpException(400, (error as Error).message));
         }
     };
 
@@ -57,8 +57,8 @@ class UserController implements Controller {
             const { email, password } = req.body;
             const token = await this.UserService.login(email, password);
             res.status(200).json({ token });
-        } catch (error: any) {
-            next(new HttpException(400, error.message));
+        } catch (error: unknown) {
+            next(new HttpException(400, (error as Error).message));
         }
     };
 

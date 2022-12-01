@@ -19,12 +19,13 @@ function validationMiddleware(schema: Joi.Schema): RequestHandler {
             );
             req.body = value;
             next();
-        } catch (err: any) {
-            const errors: String[] = [];
-
-            err.details.forEach((error: Joi.ValidationError) => {
-                errors.push(error.message);
-            });
+        } catch (err: unknown) {
+            const errors: string[] = [];
+            (err as Joi.ValidationError).details.forEach(
+                (error: Joi.ValidationErrorItem) => {
+                    errors.push(error.message);
+                }
+            );
             res.status(400).send({ errors });
         }
     };
