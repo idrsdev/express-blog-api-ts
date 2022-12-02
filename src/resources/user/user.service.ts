@@ -1,5 +1,7 @@
 import userModel from '@/resources/user/user.model';
 import token from '@/utils/token';
+import { HydratedDocument } from 'mongoose';
+import { IUser } from '@/resources/user/user.interface';
 
 class UserService {
     private user = userModel;
@@ -14,7 +16,7 @@ class UserService {
         role: string
     ): Promise<string | Error> {
         try {
-            const user = await this.user.create({
+            const user: HydratedDocument<IUser> = await this.user.create({
                 name,
                 email,
                 password,

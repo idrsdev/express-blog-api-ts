@@ -34,9 +34,9 @@ async function authenticatedMiddleware(
         }
         req.user = user;
 
-        return next();
+        next();
     } catch (error) {
-        return next(new HttpException(401, 'Unauthorized'));
+        next(new HttpException(401, 'Unauthorized'));
     }
 }
 

@@ -5,6 +5,8 @@ import HttpException from '@/utils/exceptions/http.exception';
 import validationMiddleware from '@/middleware/validation.middleware';
 import validate from '@/resources/post/post.validation';
 import PostService from '@/resources/post/post.service';
+import catchAsync from '@/utils/catchAsync';
+import { IPost } from '@/resources/post/post.interface';
 
 class PostController implements Controller {
     public path = '/posts';
@@ -18,8 +20,8 @@ class PostController implements Controller {
     private initializeRoutes(): void {
         this.router.post(
             `${this.path}`,
-            validationMiddleware(validate.create),
-            this.create
+            catchAsync(() => validationMiddleware(validate.create)),
+            catchAsync(() => this.create)
         );
     }
     private create = async (
@@ -28,12 +30,11 @@ class PostController implements Controller {
         next: NextFunction
     ): Promise<Response | void> => {
         try {
-            const { title, body } = req.body;
+            const { title, body } = req.body as IPost;
 
             const post = await this.PostService.create(title, body);
             res.status(201).json(post);
         } catch (error) {
-            // We could do error.message here
             next(new HttpException(400, 'Cannot create post'));
         }
     };

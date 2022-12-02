@@ -1,5 +1,5 @@
 import postModel from '@/resources/post/post.model';
-import Post from '@/resources/post/post.interface';
+import { IPostDoc } from '@/resources/post/post.interface';
 
 class PostService {
     private post = postModel;
@@ -7,7 +7,7 @@ class PostService {
     /**
      * Create a new post
      */
-    public async create(title: string, body: string): Promise<Post> {
+    public async create(title: string, body: string): Promise<IPostDoc | void> {
         try {
             const post = await this.post.create({ title, body });
             return post;

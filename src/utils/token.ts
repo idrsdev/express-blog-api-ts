@@ -1,9 +1,10 @@
 import jwt from 'jsonwebtoken';
-import User from '@/resources/user/user.interface';
+import { IUser } from '@/resources/user/user.interface';
 import Token from '@/utils/interfaces/token.interface';
+import { HydratedDocument } from 'mongoose';
 
-export const createToken = (user: User): string => {
-    return jwt.sign({ id: user._id }, process.env.JWT_SECRET as jwt.Secret);
+export const createToken = (user: HydratedDocument<IUser>): string => {
+    return jwt.sign(user._id, process.env.JWT_SECRET as jwt.Secret);
 };
 
 export const verifyToken = async (

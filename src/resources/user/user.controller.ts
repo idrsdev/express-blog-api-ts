@@ -5,6 +5,8 @@ import validationMiddleware from '@/middleware/validation.middleware';
 import validate from '@/resources/user/user.validation';
 import UserService from '@/resources/user/user.service';
 import authenticated from '@/middleware/authentication.middleware';
+import catchAsync from '@/utils/catchAsync';
+import { IUser, IUserLogin } from '@/resources/user/user.interface';
 
 class UserController implements Controller {
     public path = '/users';
@@ -18,24 +20,29 @@ class UserController implements Controller {
     private initialRoutes(): void {
         this.router.post(
             `${this.path}/register`,
-            validationMiddleware(validate.register),
-            this.register
+            catchAsync(() => validationMiddleware(validate.register)),
+            catchAsync(() => this.register)
         );
         this.router.post(
             `${this.path}/login`,
-            validationMiddleware(validate.login),
-            this.login
+            catchAsync(() => validationMiddleware(validate.login)),
+            catchAsync(() => this.login)
         );
-        this.router.get(`${this.path}`, authenticated, this.getUser);
+        this.router.get(
+            `${this.path}`,
+            catchAsync(() => authenticated),
+            this.getUser
+        );
     }
 
+    //
     private register = async (
         req: Request,
         res: Response,
         next: NextFunction
     ): Promise<Response | void> => {
         try {
-            const { name, email, password } = req.body;
+            const { name, email, password } = req.body as IUser;
             const token = await this.UserService.register(
                 name,
                 email,
@@ -54,7 +61,7 @@ class UserController implements Controller {
         next: NextFunction
     ): Promise<Response | void> => {
         try {
-            const { email, password } = req.body;
+            const { email, password } = req.body as IUserLogin;
             const token = await this.UserService.login(email, password);
             res.status(200).json({ token });
         } catch (error: unknown) {
@@ -68,8 +75,9 @@ class UserController implements Controller {
         next: NextFunction
     ): Response | void => {
         if (!req.user) {
-            return next(new HttpException(400, 'No logged in user'));
+            next(new HttpException(400, 'No logged in user'));
         }
+
         res.status(200).json({ user: req.user });
     };
 }

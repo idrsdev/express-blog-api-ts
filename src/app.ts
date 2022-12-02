@@ -42,7 +42,15 @@ class App {
     }
 
     private initialiseDatabaseConnection(): void {
-        mongoose.connect(`${process.env.MONGO_URI}`);
+        mongoose
+            .connect(`${process.env.MONGO_URI || ''}`)
+            .then((conn) => {
+                console.log(`MongoDB Connected: ${conn.connection.host}`);
+            })
+            .catch((error) => {
+                console.error(`Error: ${(error as Error).message}`);
+                process.exit(1);
+            });
     }
 
     public listen(): void {

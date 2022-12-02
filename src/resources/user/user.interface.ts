@@ -1,10 +1,27 @@
-import { Document } from 'mongoose';
+import { Document, Model } from 'mongoose';
 
-export default interface User extends Document {
+interface IUser {
     email: string;
     name: string;
     password: string;
     role: string;
-
-    isValidPassword(password: string): Promise<Error | boolean>;
 }
+
+// Put all user instance methods in this interface:
+interface IUserMethods {
+    isValidPassword(password: string): Promise<Error | boolean>;
+    fullName(): string;
+}
+
+// Create a new Model type that knows about IUserMethods...
+// Model<IUser, {}, IUserMethods>
+type UserModel = Model<IUser, Record<string, unknown>, IUserMethods>;
+
+interface IUserLogin {
+    email: string;
+    password: string;
+}
+
+type IUserDoc = IUser & Document;
+
+export { IUser, IUserDoc, UserModel, IUserLogin, IUserMethods };
