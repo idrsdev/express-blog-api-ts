@@ -20,17 +20,17 @@ class UserController implements Controller {
     private initialRoutes(): void {
         this.router.post(
             `${this.path}/register`,
-            catchAsync(() => validationMiddleware(validate.register)),
-            catchAsync(() => this.register)
+            catchAsync(validationMiddleware(validate.register)),
+            catchAsync(this.register)
         );
         this.router.post(
             `${this.path}/login`,
-            catchAsync(() => validationMiddleware(validate.login)),
-            catchAsync(() => this.login)
+            catchAsync(validationMiddleware(validate.login)),
+            catchAsync(this.login)
         );
         this.router.get(
-            `${this.path}`,
-            catchAsync(() => authenticated),
+            `${this.path}/me`,
+            catchAsync(authenticated),
             this.getUser
         );
     }

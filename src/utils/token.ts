@@ -4,7 +4,10 @@ import Token from '@/utils/interfaces/token.interface';
 import { HydratedDocument } from 'mongoose';
 
 export const createToken = (user: HydratedDocument<IUser>): string => {
-    return jwt.sign(user._id, process.env.JWT_SECRET as jwt.Secret);
+    return jwt.sign(
+        { id: user._id.toString() },
+        process.env.JWT_SECRET as jwt.Secret
+    );
 };
 
 export const verifyToken = async (

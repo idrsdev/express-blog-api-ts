@@ -20,8 +20,9 @@ class PostController implements Controller {
     private initializeRoutes(): void {
         this.router.post(
             `${this.path}`,
-            catchAsync(() => validationMiddleware(validate.create)),
-            catchAsync(() => this.create)
+            // catchAsync(() => validationMiddleware(validate.create)),
+            catchAsync(validationMiddleware(validate.create)),
+            catchAsync(this.create)
         );
     }
     private create = async (

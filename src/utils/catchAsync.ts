@@ -1,9 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 
-type fn = (req: Request, res: Response, next?: NextFunction) => void;
+type fnType = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => Promise<unknown>;
 
 const catchAsync =
-    (fn: fn) => (req: Request, res: Response, next?: NextFunction) => {
+    (fn: fnType) => (req: Request, res: Response, next: NextFunction) => {
         Promise.resolve(fn(req, res, next)).catch((err) => next && next(err));
     };
 

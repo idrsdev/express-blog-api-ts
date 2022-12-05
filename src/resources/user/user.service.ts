@@ -15,6 +15,7 @@ class UserService {
         password: string,
         role: string
     ): Promise<string | Error> {
+        console.log('user creation service called');
         try {
             const user: HydratedDocument<IUser> = await this.user.create({
                 name,
@@ -26,6 +27,7 @@ class UserService {
             const accessToken = token.createToken(user);
             return accessToken;
         } catch (error) {
+            console.log('user creation service failed');
             throw new Error('Unable to create user');
         }
     }
