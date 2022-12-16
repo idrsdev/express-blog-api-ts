@@ -6,7 +6,10 @@ import { HydratedDocument } from 'mongoose';
 export const createToken = (user: HydratedDocument<IUser>): string => {
     return jwt.sign(
         { id: user._id.toString() },
-        process.env.JWT_SECRET as jwt.Secret
+        process.env.JWT_SECRET ? process.env.JWT_SECRET : '',
+        {
+            expiresIn: '3d',
+        }
     );
 };
 

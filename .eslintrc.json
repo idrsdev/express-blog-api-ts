@@ -4,11 +4,11 @@
         "ecmaVersion": 2018,
         "sourceType": "module"
     },
-    // "parser": "@typescript-eslint/parser", //include it inside .ts files overrides
-    "plugins": ["@typescript-eslint"],
+    "parser": "@typescript-eslint/parser", //include it inside .ts files overrides
+    "plugins": ["@typescript-eslint"], //include it inside .ts files overrides
     "extends": [
-        // "plugin:@typescript-eslint/recommended", //include it inside .ts files overrides
-        // "plugin:prettier/recommended", //stops styling errors, handle them separately
+        "plugin:@typescript-eslint/recommended", //include it inside .ts files overrides
+        "plugin:prettier/recommended", //stops styling errors, handle them separately
         "prettier"
     ],
     "rules": {},
@@ -17,6 +17,7 @@
         {
             "files": ["*.ts", "*.tsx"], // Your TypeScript files extension
             "parser": "@typescript-eslint/parser",
+            "plugins": ["@typescript-eslint"],
             "parserOptions": {
                 "sourceType": "module",
                 "tsconfigRootDir": "",

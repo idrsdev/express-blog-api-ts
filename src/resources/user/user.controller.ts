@@ -35,12 +35,11 @@ class UserController implements Controller {
         );
     }
 
-    //
     private register = async (
         req: Request,
         res: Response,
         next: NextFunction
-    ): Promise<Response | void> => {
+    ): Promise<void> => {
         try {
             const { name, email, password } = req.body as IUser;
             const token = await this.UserService.register(
@@ -59,10 +58,11 @@ class UserController implements Controller {
         req: Request,
         res: Response,
         next: NextFunction
-    ): Promise<Response | void> => {
+    ): Promise<void> => {
         try {
             const { email, password } = req.body as IUserLogin;
             const token = await this.UserService.login(email, password);
+
             res.status(200).json({ token });
         } catch (error: unknown) {
             next(new HttpException(400, (error as Error).message));
@@ -73,7 +73,7 @@ class UserController implements Controller {
         req: Request,
         res: Response,
         next: NextFunction
-    ): Response | void => {
+    ): void => {
         if (!req.user) {
             next(new HttpException(400, 'No logged in user'));
         }

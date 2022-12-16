@@ -15,7 +15,12 @@ interface IUserMethods {
 
 // Create a new Model type that knows about IUserMethods...
 // Model<IUser, {}, IUserMethods>
-type UserModel = Model<IUser, Record<string, unknown>, IUserMethods>;
+// type UserModel = ;
+
+interface UserModel
+    extends Model<IUser, Record<string, unknown>, IUserMethods> {
+    myStaticMethod(): number;
+}
 
 interface IUserLogin {
     email: string;

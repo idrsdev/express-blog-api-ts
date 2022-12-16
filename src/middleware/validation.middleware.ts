@@ -1,19 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
-import HttpException from '@/utils/exceptions/http.exception';
 
 function validationMiddleware(
     schema: Joi.Schema
-): (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => Promise<void | HttpException> {
+): (req: Request, res: Response, next: NextFunction) => Promise<void> {
     return async (
         req: Request,
         res: Response,
         next: NextFunction
-    ): Promise<void | HttpException> => {
+    ): Promise<void> => {
         const validationOptions = {
             abortEarly: false,
             allowUnknown: true,
