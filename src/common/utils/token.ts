@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
-import { IUser } from '@/resources/user/user.interface';
-import Token from '@/utils/interfaces/token.interface';
+import { IUser } from '@/User/user.interface';
+import Token from '@/interfaces/token.interface';
 import { HydratedDocument } from 'mongoose';
 
 export const createToken = (user: HydratedDocument<IUser>): string => {

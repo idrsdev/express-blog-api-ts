@@ -1,9 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
 
-function validationMiddleware(
-    schema: Joi.Schema
-): (req: Request, res: Response, next: NextFunction) => Promise<void> {
+type validationMiddlewareI = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => Promise<void>;
+
+function validationMiddleware(schema: Joi.Schema): validationMiddlewareI {
     return async (
         req: Request,
         res: Response,
@@ -30,6 +34,7 @@ function validationMiddleware(
         //         );
         //         res.status(400).send({ errors });
         //     });
+        console.log('req.body', req.body);
 
         try {
             const value = (await schema.validateAsync(

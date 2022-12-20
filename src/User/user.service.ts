@@ -1,14 +1,11 @@
-import userModel from '@/resources/user/user.model';
+import userModel from '@/User/user.model';
 import token from '@/utils/token';
 import { HydratedDocument } from 'mongoose';
-import { IUser } from '@/resources/user/user.interface';
+import { IUser } from '@/User/user.interface';
 
 class UserService {
     private user = userModel;
 
-    /**
-     * Register a new user
-     */
     public async register(
         name: string,
         email: string,
@@ -30,9 +27,6 @@ class UserService {
         }
     }
 
-    /**
-     * Attempt to login a user
-     */
     public async login(
         email: string,
         password: string

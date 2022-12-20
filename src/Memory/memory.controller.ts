@@ -1,48 +1,22 @@
-import { Router, Request, Response, NextFunction } from 'express';
-import Controller from '@/utils/interfaces/controller.interface';
-import HttpException from '@/utils/exceptions/http.exception';
-
-import validationMiddleware from '@/middleware/validation.middleware';
-import validate from '@/resources/post/post.validation';
-import PostService from '@/resources/post/post.service';
-import catchAsync from '@/utils/catchAsync';
-import { IPost } from '@/resources/post/post.interface';
 import mongoose from 'mongoose';
+import { Request, Response, NextFunction } from 'express';
 
-class PostController implements Controller {
-    public path = '/posts';
-    public router = Router();
+import PostService from '@/Memory/memory.service';
+import { IPost } from '@/Memory/memory.interface';
+import HttpException from '@/exceptions/http.exception';
+class PostController {
     private PostService = new PostService();
 
-    constructor() {
-        this.initializeRoutes();
-    }
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    constructor() {}
 
-    private initializeRoutes(): void {
-        this.router.post(
-            `${this.path}`,
-            catchAsync(validationMiddleware(validate.create)),
-            catchAsync(this.create)
-        );
-        this.router.patch(
-            `${this.path}/:id`,
-            catchAsync(validationMiddleware(validate.update)),
-            catchAsync(this.patch)
-        );
-        this.router.delete(
-            `${this.path}/:id`,
-            catchAsync(validationMiddleware(validate.update)),
-            catchAsync(this.delete)
-        );
-    }
-    private create = async (
+    create = async (
         req: Request,
         res: Response,
         next: NextFunction
-    ): Promise<Response | void> => {
+    ): Promise<void> => {
         try {
             const { title, body } = req.body as IPost;
-
             const post = await this.PostService.create(title, body);
             res.status(201).json(post);
         } catch (error) {
@@ -50,11 +24,11 @@ class PostController implements Controller {
         }
     };
 
-    private patch = async (
+    patch = async (
         req: Request,
         res: Response,
         next: NextFunction
-    ): Promise<Response | void> => {
+    ): Promise<void> => {
         try {
             const { id } = req.params;
 
@@ -74,11 +48,11 @@ class PostController implements Controller {
         }
     };
 
-    private delete = async (
+    delete = async (
         req: Request,
         res: Response,
         next: NextFunction
-    ): Promise<Response | void> => {
+    ): Promise<void> => {
         try {
             const { id } = req.params;
 
@@ -96,4 +70,4 @@ class PostController implements Controller {
     };
 }
 
-export default PostController;
+export default new PostController();

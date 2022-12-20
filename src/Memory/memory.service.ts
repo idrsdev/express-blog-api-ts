@@ -1,6 +1,7 @@
-import postModel from '@/resources/post/post.model';
-import { IPost, IPostDoc } from '@/resources/post/post.interface';
 import { HydratedDocument, Types } from 'mongoose';
+
+import postModel from '@/Memory/memory.model';
+import { IPost, IPostDoc } from '@/Memory/memory.interface';
 
 class PostService {
     private post = postModel;

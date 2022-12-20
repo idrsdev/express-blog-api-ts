@@ -1,10 +1,7 @@
-import { Schema, model } from 'mongoose';
 import bcrypt from 'bcrypt';
-import {
-    IUser,
-    UserModel,
-    IUserMethods,
-} from '@/resources/user/user.interface';
+import { Schema, model } from 'mongoose';
+
+import { IUser, UserModel, IUserMethods } from '@/User/user.interface';
 
 const UserSchema = new Schema<IUser, UserModel, IUserMethods>(
     {

@@ -1,24 +1,26 @@
-import express, { Application } from 'express';
-import mongoose from 'mongoose';
-import compression from 'compression';
 import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
+import mongoose from 'mongoose';
+import compression from 'compression';
+import express, { Application } from 'express';
 
-import Controller from '@/utils/interfaces/controller.interface';
+import { UserRoutes } from '@/User/user.route.config';
+import { MemoryRoutes } from '@/Memory/memory.route.config';
+import { RouteConfig } from '@/common/common.route.config';
 import ErrorMiddleware from '@/middleware/error.middleware';
 
 class App {
     public express: Application;
     public port: number;
 
-    constructor(controllers: Controller[], port: number) {
+    constructor(routes: RouteConfig[], port: number) {
         this.express = express();
         this.port = port;
 
         this.initialiseDatabaseConnection();
         this.initialiseMiddleware();
-        this.initialiseControllers(controllers);
+        this.initialiseRoutes();
         this.initialiseErrorHandling();
     }
 
@@ -31,10 +33,11 @@ class App {
         this.express.use(compression());
     }
 
-    private initialiseControllers(controllers: Controller[]): void {
-        controllers.forEach((controller: Controller) => {
-            this.express.use('/api', controller.router);
-        });
+    // ['UserRoutes', 'PostRoutes']
+    // TODO: pass these RouteConfig[] as a string and create their instance
+    private initialiseRoutes(): void {
+        new UserRoutes(this.express);
+        new MemoryRoutes(this.express);
     }
 
     private initialiseErrorHandling(): void {
