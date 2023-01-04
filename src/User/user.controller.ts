@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 
 import UserService from '@/User/user.service';
 import HttpException from '@/exceptions/http.exception';
-import { IUser, IUserLogin } from '@/User/user.interface';
+import { LoginUserBody, RegisterUserBody } from '@/User/user.validation';
 
 class UserController {
     private UserService = new UserService();
@@ -10,38 +10,43 @@ class UserController {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     constructor() {}
 
-    register = async (
+    registerUser = async (
         req: Request,
         res: Response,
         next: NextFunction
-    ): Promise<void> => {
-        try {
-            const { name, email, password } = req.body as IUser;
-            const token = await this.UserService.register(
-                name,
-                email,
-                password,
-                'user'
-            );
-            res.status(201).json({ token });
-        } catch (error: unknown) {
-            next(new HttpException(400, (error as Error).message));
+    ): Promise<Response | void> => {
+        const { name, email, password } = req.body as RegisterUserBody;
+
+        const response = await this.UserService.registerUserService(
+            name,
+            email,
+            password
+        );
+
+        if (response instanceof HttpException) {
+            return next(response);
         }
+
+        return res.status(response.statusCode).json(response.data);
     };
 
-    login = async (
+    authenticateUser = async (
         req: Request,
         res: Response,
         next: NextFunction
-    ): Promise<void> => {
-        try {
-            const { email, password } = req.body as IUserLogin;
-            const token = await this.UserService.login(email, password);
+    ): Promise<Response | void> => {
+        const { email, password } = req.body as LoginUserBody;
 
-            res.status(200).json({ token });
-        } catch (error: unknown) {
-            next(new HttpException(400, (error as Error).message));
+        const response = await this.UserService.authenticateUserService(
+            email,
+            password
+        );
+
+        if (response instanceof HttpException) {
+            return next(response);
         }
+
+        return res.status(response.statusCode).json(response.data);
     };
 
     getUser = (req: Request, res: Response, next: NextFunction): void => {

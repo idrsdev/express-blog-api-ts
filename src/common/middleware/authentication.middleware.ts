@@ -1,9 +1,10 @@
+import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-import { verifyToken } from '@/utils/token';
+
 import userModel from '@/User/user.model';
 import Token from '@/interfaces/token.interface';
+import { verifyToken } from '@/common/utils/jwtToken';
 import HttpException from '@/exceptions/http.exception';
-import jwt from 'jsonwebtoken';
 
 async function authenticatedMiddleware(
     req: Request,

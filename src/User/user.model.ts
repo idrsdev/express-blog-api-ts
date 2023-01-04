@@ -1,7 +1,29 @@
 import bcrypt from 'bcrypt';
-import { Schema, model } from 'mongoose';
+import { Document, Model, Schema, model } from 'mongoose';
 
-import { IUser, UserModel, IUserMethods } from '@/User/user.interface';
+export interface IUser {
+    email: string;
+    name: string;
+    password: string;
+    role: string;
+    isVerified: boolean;
+}
+
+// Put all user instance methods in this interface:
+interface IUserMethods {
+    matchPassword(password: string): Promise<Error | boolean>;
+}
+
+// Create a new Model type that knows about IUserMethods...
+// Model<IUser, {}, IUserMethods>
+// type UserModel = ;
+
+interface UserModel
+    extends Model<IUser, Record<string, unknown>, IUserMethods> {
+    myStaticMethod(): number;
+}
+
+export type IUserDoc = IUser & Document;
 
 const UserSchema = new Schema<IUser, UserModel, IUserMethods>(
     {
@@ -19,7 +41,9 @@ const UserSchema = new Schema<IUser, UserModel, IUserMethods>(
         password: {
             type: String,
             required: true,
+            select: false,
         },
+        isVerified: { type: Boolean, default: false },
         role: {
             type: String,
             required: true,
@@ -40,11 +64,11 @@ UserSchema.pre('save', async function (next) {
     next();
 });
 
-UserSchema.methods.isValidPassword = async function (
+UserSchema.methods.matchPassword = async function (
     this: IUser,
-    password: string
+    enteredPassword: string
 ): Promise<Error | boolean> {
-    return await bcrypt.compare(password, this.password);
+    return await bcrypt.compare(enteredPassword, this.password);
 };
 
 export default model<IUser, UserModel>('User', UserSchema);

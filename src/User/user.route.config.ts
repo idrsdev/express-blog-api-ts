@@ -5,7 +5,7 @@ import catchAsync from '@/common/utils/catchAsync';
 import userController from '@/User/user.controller';
 import { RouteConfig } from '@/common/common.route.config';
 import authenticated from '@/middleware/authentication.middleware';
-import validationMiddleware from '@/common/middleware/validation.middleware';
+import validationMiddleware from '@/common/middleware/requestValidation.middleware';
 
 export class UserRoutes extends RouteConfig {
     constructor(app: Application) {
@@ -16,13 +16,16 @@ export class UserRoutes extends RouteConfig {
         this.app
             .route('/api/user/register')
             .post([
-                validationMiddleware(validate.register),
-                catchAsync(userController.register),
+                validationMiddleware(validate.registerBodySchema),
+                catchAsync(userController.registerUser),
             ]);
 
         this.app
             .route('/api/user/login')
-            .post([validationMiddleware(validate.login), userController.login]);
+            .post([
+                validationMiddleware(validate.loginBodySchema),
+                userController.authenticateUser,
+            ]);
 
         this.app
             .route('/api/user/me')

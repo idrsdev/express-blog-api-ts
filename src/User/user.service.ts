@@ -1,17 +1,23 @@
-import userModel from '@/User/user.model';
-import token from '@/utils/token';
 import { HydratedDocument } from 'mongoose';
-import { IUser } from '@/User/user.interface';
-
+import jwtToken from '@/common/utils/jwtToken';
+import userModel, { IUser } from '@/User/user.model';
+import { AuthenticatedUserI } from '@/User/user.interface';
+import HttpException from '@/common/exceptions/http.exception';
 class UserService {
     private user = userModel;
 
-    public async register(
+    public async registerUserService(
         name: string,
         email: string,
         password: string,
-        role: string
-    ): Promise<string | Error> {
+        role = 'user'
+    ): Promise<AuthenticatedUserI | HttpException> {
+        const userExists = await this.user.findOne({ email });
+
+        if (userExists) {
+            return new HttpException(400, 'Unable to create user');
+        }
+
         try {
             const user: HydratedDocument<IUser> = await this.user.create({
                 name,
@@ -20,29 +26,43 @@ class UserService {
                 role,
             });
 
-            const accessToken = token.createToken(user);
-            return accessToken;
+            return {
+                statusCode: 200,
+                data: {
+                    user,
+                    token: jwtToken.createToken(user._id),
+                },
+            };
         } catch (error) {
-            throw new Error('Unable to create user');
+            return new HttpException(400, 'Unable to create user');
         }
     }
 
-    public async login(
+    public async authenticateUserService(
         email: string,
         password: string
-    ): Promise<string | Error> {
-        try {
-            const user = await this.user.findOne({ email });
-            if (!user) {
-                throw new Error('No user with given email found');
-            }
-            if (!(await user.isValidPassword(password))) {
-                throw new Error('Wrong credentials provided');
-            }
-            return token.createToken(user);
-        } catch (error) {
-            throw new Error('Unable to login user');
+    ): Promise<HttpException | AuthenticatedUserI> {
+        const user = await this.user.findOne({ email }).select('+password');
+
+        if (!user) {
+            return new HttpException(400, 'Invalid email or password');
         }
+
+        if (!user.isVerified) {
+            return new HttpException(403, 'Verify your Account');
+        }
+
+        if (!(await user.matchPassword(password))) {
+            return new HttpException(400, 'Invalid username or password');
+        }
+
+        return {
+            statusCode: 200,
+            data: {
+                user,
+                token: jwtToken.createToken(user._id),
+            },
+        };
     }
 }
 

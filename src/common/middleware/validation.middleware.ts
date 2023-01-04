@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
+import { Request, Response, NextFunction } from 'express';
 
 type validationMiddlewareI = (
     req: Request,
@@ -34,7 +34,6 @@ function validationMiddleware(schema: Joi.Schema): validationMiddlewareI {
         //         );
         //         res.status(400).send({ errors });
         //     });
-        console.log('req.body', req.body);
 
         try {
             const value = (await schema.validateAsync(

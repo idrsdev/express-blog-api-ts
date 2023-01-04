@@ -1,14 +1,28 @@
-import Joi from 'joi';
+import { InferType, object, string } from 'yup';
 
-const register = Joi.object({
-    name: Joi.string().max(30).required(),
-    email: Joi.string().email().required(),
-    password: Joi.string().min(6).required(),
+export const registerBodySchema = object({
+    name: string().max(30).required(),
+    email: string().email().required(),
+    password: string().required(),
 });
 
-const login = Joi.object({
-    email: Joi.string().email().required(),
-    password: Joi.string().required(),
+export const loginBodySchema = object({
+    email: string().email().required(),
+    password: string().required(),
+});
+export const testSchema = object({
+    body: object({
+        email: string().email().required(),
+        password: string().required(),
+    }),
+    params: object({
+        id: string().uuid().required(),
+    }),
 });
 
-export default { register, login };
+export type TestSchemaBody = InferType<typeof testSchema.fields.body>;
+
+export type RegisterUserBody = InferType<typeof registerBodySchema>;
+export type LoginUserBody = InferType<typeof loginBodySchema>;
+
+export default { registerBodySchema, loginBodySchema };
